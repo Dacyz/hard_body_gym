@@ -1,4 +1,5 @@
 import 'package:hard_body_gym/data/extension.dart';
+import 'package:hard_body_gym/models/membership.dart';
 
 class Person {
   Person({
@@ -22,6 +23,7 @@ class Person {
   final String gender;
   final bool status;
   final String? roleName;
+  List<Membership> memberships = [];
 
   String get fullName => '$firstName $lastName';
   bool get isMale => gender == 'M';

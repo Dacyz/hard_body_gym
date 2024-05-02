@@ -4,6 +4,7 @@ import 'package:hard_body_gym/data/api.dart';
 import 'package:hard_body_gym/data/extension.dart';
 import 'package:hard_body_gym/models/person.dart';
 import 'package:hard_body_gym/presentation/pages/add_person.dart';
+import 'package:hard_body_gym/presentation/pages/detail_person.dart';
 import 'package:hard_body_gym/presentation/provider/provider.dart';
 import 'package:provider/provider.dart';
 
@@ -35,15 +36,15 @@ class _HomePageState extends State<HomePage> {
     reChargeList();
   }
 
-  void reChargeList() async {
-    _future = ApiData.getPersons();
+  void reChargeList() {
+    final service = Provider.of<DataService>(context, listen: false);
+    _future = ApiData.getPersons()..then((value) => service.persons = value);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = Provider.of<DataService>(context, listen: false);
-
+    final service = Provider.of<DataService>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hard Body Gym'),
@@ -62,9 +63,9 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Bienvenido, ${data.user?.fullName}'),
+            Text('Bienvenido, ${service.user?.fullName}'),
             const SizedBox(height: 16),
-            const Text('Menbresias por vencer'),
+            const Text('Membresías por vencer'),
             const SizedBox(height: 16),
             const Text('Listado de miembros'),
             TextField(
@@ -79,49 +80,64 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 400,
               width: double.infinity,
-              child: FutureBuilder(
+              child: FutureBuilder<List<Person>>(
                 future: _future,
                 builder: (_, data) {
                   if (data.connectionState == ConnectionState.waiting) {
+                    if (service.persons.isNotEmpty) {
+                      return _buildList(service.persons);
+                    }
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (data.hasError) {
-                    return const Center(child: Text('Error'));
+                    return Center(child: Text('${data.error}'));
                   }
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                    itemCount: data.data?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final item = data.data![index];
-                      return Card(
-                        color: item.isMale ? null : const Color(0xFFFFE0EE),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(item.isMale ? Icons.man : Icons.woman),
-                                  const SizedBox(width: 8),
-                                  Expanded(child: Text(item.fullName)),
-                                ],
-                              ),
-                              if (item.birthday != null) Text('FC: ${item.birthday?.ddMMyy}'),
-                              if (item.email?.isNotEmpty == true) Text(item.email ?? ''),
-                              if (item.roleName?.isNotEmpty == true) Text(item.roleName ?? ''),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                  return _buildList(data.data ?? []);
                 },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildList(List<Person> data) {
+    final service = Provider.of<DataService>(context, listen: false);
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final item = data[index];
+        return Card(
+          color: item.isMale ? null : const Color(0xFFFFE0EE),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(item.isMale ? Icons.man : Icons.woman),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(item.fullName)),
+                  ],
+                ),
+                if (item.birthday != null) Text('FC: ${item.birthday?.ddMMyy}'),
+                if (item.email?.isNotEmpty == true) Text(item.email ?? ''),
+                if (item.roleName?.isNotEmpty == true) Text(item.roleName ?? ''),
+                TextButton(
+                  onPressed: () {
+                    service.person = item;
+                    Navigator.pushNamed(context, DetailPersonPage.route);
+                  },
+                  child: const Text('Ver más'),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

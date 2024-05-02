@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hard_body_gym/presentation/pages/add_membership.dart';
 import 'package:hard_body_gym/presentation/pages/add_person.dart';
+import 'package:hard_body_gym/presentation/pages/detail_person.dart';
 import 'package:hard_body_gym/presentation/pages/home.dart';
 import 'package:hard_body_gym/presentation/pages/login.dart';
 
@@ -10,9 +12,11 @@ class Constants {
   static final Map<String, String> headers = {'Content-Type': 'application/json'};
 
   static const initialRoute = LoginPage.route;
-  static final Map<String, Widget Function(BuildContext)> routes = {
+  static final Map<String, Widget Function(BuildContext context)> routes = {
     LoginPage.route: (context) => const LoginPage(),
     HomePage.route: (context) => const HomePage(),
     AddPersonPage.route: (context) => const AddPersonPage(),
+    DetailPersonPage.route: (context) => const DetailPersonPage(),
+    AddMembershipPage.route: (context) => const AddMembershipPage(),
   };
 }
