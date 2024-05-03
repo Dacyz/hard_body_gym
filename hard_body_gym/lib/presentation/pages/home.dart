@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hard_body_gym/data/api.dart';
 import 'package:hard_body_gym/data/extension.dart';
@@ -50,6 +48,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hard Body Gym'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 24),
+            child: Image.asset(
+              'assets/image/logo.png',
+              width: 32,
+            ),
+          ),
+        ],
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(

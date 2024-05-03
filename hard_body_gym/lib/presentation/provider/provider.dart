@@ -28,12 +28,18 @@ class DataService extends ChangeNotifier {
   int get random => Random().nextInt(999) + 100;
 
   Future<XFile?> pickImage() async {
-    final image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
     return image;
   }
 
   Future<XFile?> pickPhoto() async {
-    final image = await _picker.pickImage(source: ImageSource.camera);
+    final image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+    );
     return image;
   }
 

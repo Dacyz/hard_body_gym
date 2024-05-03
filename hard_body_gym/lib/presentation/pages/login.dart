@@ -57,6 +57,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Image.asset(
+                'assets/image/logo.png',
+                width: 150,
+              ),
+              const SizedBox(height: 8),
               const Text('Inicia sesión'),
               const SizedBox(height: 24),
               TextField(
