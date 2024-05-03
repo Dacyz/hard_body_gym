@@ -32,6 +32,11 @@ class DataService extends ChangeNotifier {
     return image;
   }
 
+  Future<XFile?> pickPhoto() async {
+    final image = await _picker.pickImage(source: ImageSource.camera);
+    return image;
+  }
+
   Future<String?> uploadImage(final File? file) async {
     if (file == null) return null;
     final user = this.user;

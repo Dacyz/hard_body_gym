@@ -84,34 +84,86 @@ class _AddPersonPageState extends State<AddPersonPage> {
         children: [
           const Text('Añadir persona'),
           const SizedBox(height: 24),
-          InkWell(
-            onTap: () async {
-              final value = await service.pickImage();
-              if (value == null) return;
-              image = value.path;
-              setState(() {});
-            },
-            child: Container(
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                // color: Colors.white,
-                border: Border.all(color: Colors.black, width: 1),
-                image: image.isEmpty
-                    ? null
-                    : DecorationImage(
-                        image: FileImage(File(image)),
-                        fit: BoxFit.cover,
-                      ),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  // color: Colors.white,
+                  border: Border.all(color: Colors.black, width: 1),
+                  image: image.isEmpty
+                      ? null
+                      : DecorationImage(
+                          image: FileImage(File(image)),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+                child: image.isEmpty
+                    ? const Icon(
+                        Icons.person,
+                        size: 48,
+                      )
+                    : null,
               ),
-              child: image.isEmpty
-                  ? const Icon(
-                      Icons.person,
-                      size: 48,
-                    )
-                  : null,
-            ),
+              if (image.isEmpty) ...[
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: IconButton.filled(
+                    onPressed: () async {
+                      final value = await service.pickImage();
+                      if (value == null) return;
+                      image = value.path;
+                      setState(() {});
+                    },
+                    color: Colors.black,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      elevation: const MaterialStatePropertyAll(8),
+                    ),
+                    icon: const Icon(Icons.image),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: IconButton.filled(
+                    onPressed: () async {
+                      final value = await service.pickPhoto();
+                      if (value == null) return;
+                      image = value.path;
+                      setState(() {});
+                    },
+                    color: Colors.black,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      elevation: const MaterialStatePropertyAll(8),
+                    ),
+                    icon: const Icon(Icons.camera_alt),
+                  ),
+                ),
+              ],
+              if (image.isNotEmpty)
+                Positioned(
+                  top: -5,
+                  right: -5,
+                  child: IconButton.filled(
+                    onPressed: () async {
+                      image = '';
+                      setState(() {});
+                    },
+                    color: Colors.black,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      elevation: const MaterialStatePropertyAll(8),
+                    ),
+                    icon: const Icon(Icons.close),
+                  ),
+                ),
+            ],
           ),
           TextField(
             controller: user,

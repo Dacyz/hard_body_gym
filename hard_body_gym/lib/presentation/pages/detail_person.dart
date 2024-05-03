@@ -115,10 +115,12 @@ class _DetailPersonPageState extends State<DetailPersonPage> {
                               children: [
                                 Icon(item.status == 'A' ? Icons.golf_course_sharp : Icons.no_backpack_outlined),
                                 const SizedBox(width: 2),
-                                Expanded(child: Text('Periodo: ${item.start.ddMMyy} - ${item.end.ddMMyy}'),),
+                                Expanded(
+                                  child: Text(item.date),
+                                ),
                               ],
                             ),
-                            Text(item.description),
+                            if (item.description.isNotEmpty) Text(item.description),
                             Row(
                               children: [
                                 item.coin == 'S' ? const Flexible(child: Text('S/.')) : const Icon(Icons.attach_money),

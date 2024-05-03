@@ -25,6 +25,8 @@ class Membership {
   final String status;
   final int registerBy;
 
+  String get date => start.year == end.year ? "${start.ddMM} - ${end.ddMM}" : "${start.ddMMyy} - ${end.ddMMyy}";
+
   Membership copyWith({
     int? idMembership,
     DateTime? start,
