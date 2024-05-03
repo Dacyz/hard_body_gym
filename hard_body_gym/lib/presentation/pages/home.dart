@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hard_body_gym/data/api.dart';
 import 'package:hard_body_gym/data/extension.dart';
 import 'package:hard_body_gym/models/person.dart';
@@ -53,21 +55,18 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'homeButton',
         onPressed: () async {
-          await Navigator.pushNamed(context, AddPersonPage.route);
+          await AddPersonPage.show(context);
           init();
         },
         child: const Icon(Icons.add),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Bienvenido, ${service.user?.fullName}'),
             const SizedBox(height: 16),
-            const Text('Membresías por vencer'),
-            const SizedBox(height: 16),
-            const Text('Listado de miembros'),
             TextField(
               controller: search,
               decoration: const InputDecoration(
@@ -77,9 +76,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 400,
-              width: double.infinity,
+            Expanded(
               child: FutureBuilder<List<Person>>(
                 future: _future,
                 builder: (_, data) {
@@ -104,35 +101,41 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildList(List<Person> data) {
     final service = Provider.of<DataService>(context, listen: false);
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+    return MasonryGridView.builder(
+      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemCount: data.length,
       itemBuilder: (context, index) {
         final item = data[index];
-        return Card(
-          color: item.isMale ? null : const Color(0xFFFFE0EE),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+        return GestureDetector(
+          onTap: () {
+            service.person = item;
+            Navigator.pushNamed(context, DetailPersonPage.route);
+          },
+          child: Card(
+            clipBehavior: Clip.hardEdge,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(item.isMale ? Icons.man : Icons.woman),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(item.fullName)),
-                  ],
+                if (item.urlPhoto.isNotEmpty)
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      item.urlPhoto,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('${item.isMale ? '♂' : '♀'} ${item.fullName}'),
+                      if (item.birthday != null) Text('FC: ${item.birthday?.ddMMyy}'),
+                      if (item.email?.isNotEmpty == true) Text(item.email ?? ''),
+                      if (item.roleName?.isNotEmpty == true) Text(item.roleName ?? ''),
+                    ],
+                  ),
                 ),
-                if (item.birthday != null) Text('FC: ${item.birthday?.ddMMyy}'),
-                if (item.email?.isNotEmpty == true) Text(item.email ?? ''),
-                if (item.roleName?.isNotEmpty == true) Text(item.roleName ?? ''),
-                TextButton(
-                  onPressed: () {
-                    service.person = item;
-                    Navigator.pushNamed(context, DetailPersonPage.route);
-                  },
-                  child: const Text('Ver más'),
-                )
               ],
             ),
           ),

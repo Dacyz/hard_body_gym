@@ -6,12 +6,13 @@ class Person {
     required this.idPerson,
     required this.firstName,
     required this.lastName,
-    required this.birthday,
-    required this.registerAt,
-    required this.email,
+    this.birthday,
+    this.registerAt,
+    this.email,
     required this.gender,
     required this.status,
-    required this.roleName,
+    this.roleName,
+    this.urlPhoto = '',
   });
 
   final int idPerson;
@@ -23,6 +24,7 @@ class Person {
   final String gender;
   final bool status;
   final String? roleName;
+  final String urlPhoto;
   List<Membership> memberships = [];
 
   String get fullName => '$firstName $lastName';
@@ -38,6 +40,7 @@ class Person {
     String? gender,
     bool? status,
     String? roleName,
+    String? urlPhoto,
   }) {
     return Person(
       idPerson: idPerson ?? this.idPerson,
@@ -49,6 +52,7 @@ class Person {
       gender: gender ?? this.gender,
       status: status ?? this.status,
       roleName: roleName ?? this.roleName,
+      urlPhoto: urlPhoto ?? this.urlPhoto,
     );
   }
 
@@ -63,6 +67,7 @@ class Person {
       gender: json["gender"] ?? "",
       status: json["status"] ?? false,
       roleName: json["role_name"] ?? "",
+      urlPhoto: json["url_photo"] ?? "",
     );
   }
 
@@ -76,10 +81,11 @@ class Person {
         "gender": gender,
         "status": status,
         "role_name": roleName,
+        "url_photo": urlPhoto
       };
 
   @override
   String toString() {
-    return "$idPerson, $firstName, $lastName, $birthday, $registerAt, $email, $gender, $status, $roleName, ";
+    return "$idPerson, $firstName, $lastName, $birthday, $registerAt, $email, $gender, $status, $roleName, $urlPhoto";
   }
 }

@@ -35,6 +35,7 @@ class ApiData {
     String gender,
     DateTime? birthday,
     String? email,
+    String? urlPhoto,
   ) async {
     final data = {
       "firstName": firstName,
@@ -42,6 +43,7 @@ class ApiData {
       "birthday": birthday?.yyMMdd,
       "email": email?.isEmpty != false ? null : email,
       "gender": gender,
+      "urlPhoto": urlPhoto,
     };
     final uri = Uri.parse('${Constants.host}/data/add_person.php');
     final resp = await http

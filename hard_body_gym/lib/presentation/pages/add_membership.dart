@@ -7,7 +7,16 @@ import 'package:provider/provider.dart';
 
 class AddMembershipPage extends StatefulWidget {
   const AddMembershipPage({super.key});
-  static const String route = '/add-membership';
+
+  static show(BuildContext context) async {
+    return await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return const AddMembershipPage();
+      },
+    );
+  }
 
   @override
   State<AddMembershipPage> createState() => _AddMembershipPageState();
@@ -73,157 +82,144 @@ class _AddMembershipPageState extends State<AddMembershipPage> {
 
   @override
   Widget build(BuildContext context) {
-    final data = Provider.of<DataService>(context, listen: false);
-    final person = data.person;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Añadir membresía'),
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 24,
+        left: 24,
+        right: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'addPersonButton',
-        onPressed: _add,
-        child: const Icon(Icons.add),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Añadir membresía'),
+          TextField(
+            controller: desc,
+            maxLength: 45,
+            textAlign: TextAlign.start,
+            textAlignVertical: TextAlignVertical.top,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: 'Descripción',
+              label: Text('Descripción'),
+              alignLabelWithHint: true,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(person?.isMale == true ? Icons.man : Icons.woman),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(person?.fullName ?? '')),
-                        ],
-                      ),
-                      if (person?.birthday != null) Text('FC: ${person?.birthday?.ddMMyy}'),
-                      if (person?.email?.isNotEmpty == true) Text(person?.email ?? ''),
-                      if (person?.roleName?.isNotEmpty == true) Text(person?.roleName ?? ''),
-                    ],
+              Flexible(
+                flex: 1,
+                child: DropdownButtonFormField(
+                  value: coin,
+                  // isExpanded: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Moneda',
+                    label: Text('Moneda'),
                   ),
+                  items: coinList
+                      .map<DropdownMenuItem<String>>(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    coin = value;
+                    setState(() {});
+                  },
                 ),
               ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: desc,
-                maxLength: 45,
-                textAlign: TextAlign.start,
-                textAlignVertical: TextAlignVertical.top,
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  hintText: 'Descripción',
-                  label: Text('Descripción'),
-                  alignLabelWithHint: true,
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 4,
+                child: TextField(
+                  controller: price,
+                  decoration: const InputDecoration(
+                    hintText: 'Precio',
+                    label: Text('Precio'),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: DropdownButtonFormField(
-                      value: coin,
-                      // isExpanded: true,
-                      decoration: const InputDecoration(
-                        hintText: 'Moneda',
-                        label: Text('Moneda'),
-                      ),
-                      items: coinList
-                          .map<DropdownMenuItem<String>>(
-                            (e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(e),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) {
-                          return;
-                        }
-                        coin = value;
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 4,
-                    child: TextField(
-                      controller: price,
-                      decoration: const InputDecoration(
-                        hintText: 'Precio',
-                        label: Text('Precio'),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: start,
-                      readOnly: true,
-                      enabled: true,
-                      onTap: () async {
-                        final value = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                          currentDate: currentStart,
-                          initialDate: currentStart,
-                        );
-                        if (value == null) {
-                          return;
-                        }
-                        start.text = value.yyMMdd;
-                        currentStart = value;
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Inicio',
-                        label: Text('Inicio'),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: end,
-                      readOnly: true,
-                      enabled: true,
-                      onTap: () async {
-                        final value = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                          currentDate: currentEnd,
-                          initialDate: currentEnd,
-                        );
-                        if (value == null) {
-                          return;
-                        }
-                        end.text = value.yyMMdd;
-                        currentEnd = value;
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Fin',
-                        label: Text('Fin'),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: start,
+                  readOnly: true,
+                  enabled: true,
+                  onTap: () async {
+                    final value = await showDatePicker(
+                      context: context,
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      currentDate: currentStart,
+                      initialDate: currentStart,
+                    );
+                    if (value == null) {
+                      return;
+                    }
+                    start.text = value.yyMMdd;
+                    currentStart = value;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Inicio',
+                    label: Text('Inicio'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: end,
+                  readOnly: true,
+                  enabled: true,
+                  onTap: () async {
+                    final value = await showDatePicker(
+                      context: context,
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      currentDate: currentEnd,
+                      initialDate: currentEnd,
+                    );
+                    if (value == null) {
+                      return;
+                    }
+                    end.text = value.yyMMdd;
+                    currentEnd = value;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Fin',
+                    label: Text('Fin'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancelar'),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: _add,
+                child: const Text('Guardar'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

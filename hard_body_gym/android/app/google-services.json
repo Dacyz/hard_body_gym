@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "152416006616",
+    "project_id": "hardbodygym-baac2",
+    "storage_bucket": "hardbodygym-baac2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152416006616:android:cef5c6f5ec5e5b02bb02ad",
+        "android_client_info": {
+          "package_name": "com.example.hard_body_gym"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_VlLjgq3Ge2geWIgJLdH0ZPF1FYWHf_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
